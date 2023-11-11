@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 //const verifyJwt = require('../middleWare/verifyToken');
-const signController = require('../controllers/studentController')
+const signController = require('../controllers/student')
 const jsonParser = bodyParser.json();
 router.use(jsonParser)
 

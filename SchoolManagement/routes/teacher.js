@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
+const teacherController = require('../controllers/teacher')
 const jsonParser = bodyParser.json();
 router.use(jsonParser)
 
-const examRoute = require('../controllers/examController')
-
-router.post('/shedule', examRoute.sheduleExam)
-
+router.get('/view', teacherController.viewTeachers)
 module.exports = router;

@@ -1,5 +1,5 @@
 const con = require("../config/connection");
-const teacherModel = require('../models/teacherModel')
+const teacherModel = require('../models/teacher')
 
 const viewTeachers = async (req, res) => {
     let result;
@@ -9,11 +9,11 @@ const viewTeachers = async (req, res) => {
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
         result = await teacherModel.view(startIndex, endIndex);
-        console.log(result);
-        res.status(200).send(result);
+        result = result[0]
+        res.status(200).send({ message: "success", result });
     }
     catch (err) {
-        res.status(500).send({ error: "Failed to fetch from database" });
+        res.status(500).send({ message: "Failed to fetch from database" });
     }
 
 }
