@@ -45,6 +45,8 @@ const viewStudent = async (req, res) => {
         result = result[0]
         res.status(200).send({ message: "success", result, success: true });
     } catch (err) {
+        console.log(err);
+        console.log(result);
         res.status(500).send({ message: "Failed to fetch database", success: false });
     }
 }

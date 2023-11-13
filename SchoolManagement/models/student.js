@@ -1,38 +1,55 @@
 const con = require("../config/connection");
+
 const createUser = async (rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord) => {
+    const db = con;
     let result
     try {
         const qr = `INSERT INTO student (roll_number, first_name, last_name, date_of_birth, gender, aadhar_number, nationality, caste, mobile, address, pin_code,password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        result = await con.promise().query(qr, [rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord])
+        result = await db.promise().query(qr, [rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord])
         return result;
     }
     catch (err) {
         throw err
     }
+    finally {
+        await db.close();
+    }
 };
 const studentLogin = async (rollNumber, aadharNumber) => {
+    const db = con;
     let result
     try {
         const qr = await `SELECT * FROM student WHERE roll_number = ? AND aadhar_number = ?`;
-        result = con.promise().query(qr, [rollNumber, aadharNumber])
+        result = db.promise().query(qr, [rollNumber, aadharNumber])
         return result
     } catch (err) {
         throw err;
     }
+    finally {
+        await db.close();
+    }
 
 };
+
 const view = async (startIndex, endIndex) => {
+    const db = con;
     let result
     try {
         const qr = await `SELECT * FROM student limit ${startIndex} , ${endIndex}`;
-        result = con.promise().query(qr)
+        result = db.promise().query(qr)
+        console.log();
         return result
     }
     catch (err) {
+        console.log(err);
         throw err
+    }
+    finally {
+        await db.close();
     }
 };
 const update = async (id, address) => {
+    const db = con;
     let result;
     try {
         const qr = await `update student set first_name = ? where id= ?`;
@@ -41,8 +58,12 @@ const update = async (id, address) => {
     } catch (err) {
         throw err
     }
+    finally {
+        await db.close();
+    }
 }
 const viewOne = async (id) => {
+    const db = con;
     let result;
     try {
         const qr = await `select * from student where id = ${id}`
@@ -50,6 +71,9 @@ const viewOne = async (id) => {
         return result
     } catch (err) {
         throw err
+    }
+    finally {
+        await db.close();
     }
 }
 module.exports = { createUser, studentLogin, view, update, viewOne };
