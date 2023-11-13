@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
 
-const studentSignup = require('./routes/studentRoute');
-const teacher = require('./routes/teacherRoute');
-const exam = require('./routes/examRoute');
+const studentSignup = require('./routes/student');
+const teacher = require('./routes/teacher');
+const exam = require('./routes/exam');
 
 app.use('/student', studentSignup);
 app.use('/teacher', teacher)
