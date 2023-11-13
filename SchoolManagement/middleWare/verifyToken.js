@@ -2,22 +2,18 @@ const jwt = require('jsonwebtoken')
 const verifyJwt = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (authHeader === undefined) {
-        return res.json("token is not generated")
+        return res.status(400).send({ message: "token is not generated", success: false });
     } else {
         let token = authHeader.split(" ")[1]
         jwt.verify(token, "scretekeyStudent", (err, decoded) => {
             if (err) {
-                console.log(token);
-                res.json("Not Authenticated")
+                res.status(401).send({ message: "Not Authenticate", success: false });
             } else {
                 next();
             }
         })
     }
 }
-/*app.get('/checkauth', verifyJwt, (req, res) => {
-    return res.json("Authenticated")
-})*/
 
 module.exports = {
     verifyJwt

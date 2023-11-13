@@ -12,4 +12,15 @@ const view = async (startIndex, endIndex) => {
     }
 }
 
-module.exports = { view }
+const login = async (email, password) => {
+    let result;
+    try {
+        const qr = await `select * from teacher where email=? and password =?`;
+        result = con.promise().query(qr, [email, password]);
+        console.log(result);
+        return result
+    } catch (err) {
+        throw err
+    }
+}
+module.exports = { view, login }

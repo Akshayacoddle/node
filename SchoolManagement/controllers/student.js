@@ -7,7 +7,7 @@ const createData = async (req, res) => {
         let result;
         const { rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord } = req.body;
         if (!rollNumber || !firstName || !lastName || !dateOfBirth || !gender || !aadharNumber || !nationality || !caste || !mobile || !address || !pinCode || !passWord) {
-            return res.status(400).send({ message: "Missing required fields" });
+            return res.status(400).send({ message: "Missing required fields", success: false });
         }
         result = await studentModel.createUser(rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord)
         res.status(200).send({ message: "Data added successfully", success: true });
@@ -45,8 +45,6 @@ const viewStudent = async (req, res) => {
         result = result[0]
         res.status(200).send({ message: "success", result, success: true });
     } catch (err) {
-        console.log(result);
-        console.log(err);
         res.status(500).send({ message: "Failed to fetch database", success: false });
     }
 }
@@ -68,7 +66,6 @@ const viewOneStudent = async (req, res) => {
         result = result[0]
         res.status(200).send({ message: "success", result, success: true });
     } catch (err) {
-
         res.status(500).send({ message: "Failed to fetch database", success: false });
     }
 }

@@ -9,8 +9,7 @@ router.use(jsonParser)
 router.post('/register', signController.createData);
 router.post('/login', signController.login);
 router.get('/view', jwt.verifyJwt, signController.viewStudent)
-router.get('/viewone/', signController.viewOneStudent)
-router.put('/update', signController.updateStudent)
-//router.get('/authenticate', verifyJwt.verifyJwt);
+router.get('/viewone', jwt.verifyJwt, signController.viewOneStudent)
+router.put('/update', jwt.verifyJwt, signController.updateStudent)
 
 module.exports = router;
