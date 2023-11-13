@@ -1,7 +1,8 @@
 const con = require("../config/connection");
 
+
 const createUser = async (rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord) => {
-    const db = con;
+    const db = con.makeDb();
     let result
     try {
         const qr = `INSERT INTO student (roll_number, first_name, last_name, date_of_birth, gender, aadhar_number, nationality, caste, mobile, address, pin_code,password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -16,11 +17,11 @@ const createUser = async (rollNumber, firstName, lastName, dateOfBirth, gender, 
     }
 };
 const studentLogin = async (rollNumber, aadharNumber) => {
-    const db = con;
+    const db = con.makeDb();
     let result
     try {
         const qr = await `SELECT * FROM student WHERE roll_number = ? AND aadhar_number = ?`;
-        result = db.promise().query(qr, [rollNumber, aadharNumber])
+        result = db.query(qr, [rollNumber, aadharNumber])
         return result
     } catch (err) {
         throw err;
@@ -32,11 +33,11 @@ const studentLogin = async (rollNumber, aadharNumber) => {
 };
 
 const view = async (startIndex, endIndex) => {
-    const db = con;
+    const db = con.makeDb();
     let result
     try {
         const qr = await `SELECT * FROM student limit ${startIndex} , ${endIndex}`;
-        result = db.promise().query(qr)
+        result = db.query(qr)
         console.log();
         return result
     }
@@ -49,7 +50,7 @@ const view = async (startIndex, endIndex) => {
     }
 };
 const update = async (id, address) => {
-    const db = con;
+    const db = con.makeDb();
     let result;
     try {
         const qr = await `update student set first_name = ? where id= ?`;
@@ -63,7 +64,7 @@ const update = async (id, address) => {
     }
 }
 const viewOne = async (id) => {
-    const db = con;
+    const db = con.makeDb();
     let result;
     try {
         const qr = await `select * from student where id = ${id}`
