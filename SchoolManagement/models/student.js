@@ -45,7 +45,6 @@ const studentLogin = async (rollNumber, aadharNumber) => {
     }
 
 };
-
 const view = async (startIndex, endIndex) => {
     const db = con.makeDb();
     let result

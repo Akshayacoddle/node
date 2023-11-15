@@ -10,7 +10,6 @@ const createData = async (req, res) => {
             return res.status(400).send({ message: "Missing required fields", success: false });
         }
         result = await studentModel.checkAadhar(aadharNumber)
-        console.log(result);
         if (result.length > 0) {
             res.status(403).send({ message: "Already exists", success: false });
         }
@@ -35,6 +34,7 @@ const login = async (req, res) => {
             const jwtToken = jwt.sign({ id }, "scretekeyStudent");
             res.status(200).send({ message: "Login successful", jwtToken, success: true });
         }
+        res.status(401).send({ message: "Invalid credentials", success: false });
     } catch (err) {
         res.status(401).send({ message: "Invalid credentials", success: false });
     }
