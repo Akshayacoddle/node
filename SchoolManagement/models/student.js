@@ -1,12 +1,26 @@
 const con = require("../config/connection");
 
-
+const checkAadhar = async (aadharNumber) => {
+    const db = con.makeDb()
+    try {
+        const qr = `select * from student where aadhar_number =${aadharNumber}`
+        let result = await db.query(qr)
+        console.log(result);
+        return result;
+    } catch (err) {
+        console.log(err);
+        throw err
+    } finally {
+        await db.close();
+    }
+}
 const createUser = async (rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord) => {
     const db = con.makeDb();
     let result
     try {
-        const qr = `INSERT INTO student (roll_number, first_name, last_name, date_of_birth, gender, aadhar_number, nationality, caste, mobile, address, pin_code,password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        result = await db.promise().query(qr, [rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord])
+        const qr = `INSERT  INTO student (roll_number, first_name, last_name, date_of_birth, gender, aadhar_number, nationality, caste, mobile, address, pin_code,password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        result = await db.query(qr, [rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord])
+        console.log(result);
         return result;
     }
     catch (err) {
@@ -20,8 +34,8 @@ const studentLogin = async (rollNumber, aadharNumber) => {
     const db = con.makeDb();
     let result
     try {
-        const qr = await `SELECT * FROM student WHERE roll_number = ? AND aadhar_number = ?`;
-        result = db.query(qr, [rollNumber, aadharNumber])
+        const qr = `SELECT * FROM student WHERE roll_number = ? AND aadhar_number = ?`;
+        result = await db.query(qr, [rollNumber, aadharNumber])
         return result
     } catch (err) {
         throw err;
@@ -38,7 +52,6 @@ const view = async (startIndex, endIndex) => {
     try {
         const qr = await `SELECT * FROM student limit ${startIndex} , ${endIndex}`;
         result = db.query(qr)
-        console.log();
         return result
     }
     catch (err) {
@@ -49,32 +62,5 @@ const view = async (startIndex, endIndex) => {
         await db.close();
     }
 };
-const update = async (id, address) => {
-    const db = con.makeDb();
-    let result;
-    try {
-        const qr = await `update student set first_name = ? where id= ?`;
-        result = con.promise().query(qr, [id, address])
-        return result;
-    } catch (err) {
-        throw err
-    }
-    finally {
-        await db.close();
-    }
-}
-const viewOne = async (id) => {
-    const db = con.makeDb();
-    let result;
-    try {
-        const qr = await `select * from student where id = ${id}`
-        result = con.promise().query(qr)
-        return result
-    } catch (err) {
-        throw err
-    }
-    finally {
-        await db.close();
-    }
-}
-module.exports = { createUser, studentLogin, view, update, viewOne };
+
+module.exports = { createUser, studentLogin, view, checkAadhar };

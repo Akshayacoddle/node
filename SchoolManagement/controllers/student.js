@@ -1,4 +1,4 @@
-// studentController.js
+
 const con = require("../config/connection");
 const studentModel = require('../models/student');
 const jwt = require('jsonwebtoken')
@@ -8,6 +8,11 @@ const createData = async (req, res) => {
         const { rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord } = req.body;
         if (!rollNumber || !firstName || !lastName || !dateOfBirth || !gender || !aadharNumber || !nationality || !caste || !mobile || !address || !pinCode || !passWord) {
             return res.status(400).send({ message: "Missing required fields", success: false });
+        }
+        result = await studentModel.checkAadhar(aadharNumber)
+        console.log(result);
+        if (result.length > 0) {
+            res.status(403).send({ message: "Already exists", success: false });
         }
         result = await studentModel.createUser(rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord)
         res.status(200).send({ message: "Data added successfully", success: true });
@@ -40,9 +45,8 @@ const viewStudent = async (req, res) => {
         const page = req.query.page
         const limit = req.query.limit
         const startIndex = (page - 1) * limit;
-        const endIndex = page * limit;
-        result = await studentModel.view(startIndex, endIndex)
-        result = result[0]
+        result = await studentModel.view(startIndex, limit)
+        result = result
         res.status(200).send({ message: "success", result, success: true });
     } catch (err) {
         console.log(err);
@@ -50,28 +54,8 @@ const viewStudent = async (req, res) => {
         res.status(500).send({ message: "Failed to fetch database", success: false });
     }
 }
-const updateStudent = async (req, res) => {
-    let result;
-    try {
-        const { id, address } = req.body;
-        result = await studentModel.view(id, address)
-        res.status(200).send(students);
-    } catch (err) {
-        res.status(500).send({ message: "Failed to fetch database", success: false });
-    }
-}
-const viewOneStudent = async (req, res) => {
-    let result;
-    try {
-        let id = req.params.id;
-        result = await studentModel.viewOne(id)
-        result = result[0]
-        res.status(200).send({ message: "success", result, success: true });
-    } catch (err) {
-        res.status(500).send({ message: "Failed to fetch database", success: false });
-    }
-}
+
 module.exports = {
     createData,
-    login, viewStudent, updateStudent, viewOneStudent
+    login, viewStudent
 };

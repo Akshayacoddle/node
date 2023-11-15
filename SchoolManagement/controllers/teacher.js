@@ -1,5 +1,6 @@
 const con = require("../config/connection");
 const teacherModel = require('../models/teacher')
+const jwt = require('jsonwebtoken')
 
 const login = async (req, res) => {
     let result;
@@ -9,12 +10,12 @@ const login = async (req, res) => {
             return res.status(400).send({ message: "Missing required fields", success: false });
         }
         result = await teacherModel.login(email, password)
-
         if (result.length > 0) {
-            res.status(200).send({ message: "Login successful", success: true });
+            const id = result[0].id
+            const jwtToken = jwt.sign({ id }, "scretekeyStudent");
+            res.status(200).send({ message: "Login successful", jwtToken, success: true });
         }
     } catch (err) {
-
         res.status(401).send({ message: "Invalid credentials", success: false });
     }
 }
@@ -24,10 +25,8 @@ const viewTeachers = async (req, res) => {
         const page = req.query.page
         const limit = req.query.limit
         const startIndex = (page - 1) * limit;
-        const endIndex = page * limit;
-        result = await teacherModel.view(startIndex, endIndex);
-        result = result[0]
-        res.status(200).send({ message: "success", success: true });
+        result = await teacherModel.view(startIndex, limit)
+        res.status(200).send({ message: "success", result, success: true });
     }
     catch (err) {
         res.status(500).send({ message: "Failed to fetch from database", success: false });

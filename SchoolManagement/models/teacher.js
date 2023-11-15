@@ -20,8 +20,8 @@ const login = async (email, password) => {
     const db = con.makeDb();
     let result;
     try {
-        const qr = await `select * from teacher where email=? and password =?`;
-        result = db.query(qr, [email, password]);
+        const qr = `select * from teacher where email=? and password =?`;
+        result = await db.query(qr, [email, password]);
         console.log(result);
         return result
     } catch (err) {
