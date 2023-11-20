@@ -18,7 +18,7 @@ const login = async (req, res) => {
   } catch (err) {
     res.status(401).send({ message: 'Invalid credentials', success: false });
   }
-}
+};
 const viewTeachers = async (req, res) => {
   let result;
   try {

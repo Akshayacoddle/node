@@ -16,7 +16,7 @@ const createData = async (req, res) => {
     if (result1.length > 0) {
       res.status(403).send({ message: 'Already exists', success: false });
     }
-    await studentModel.createUser(
+    await studentModel.createUser({
       rollNumber,
       firstName,
       lastName,
@@ -29,7 +29,8 @@ const createData = async (req, res) => {
       address,
       pinCode,
       passWord,
-    );
+
+    });
     res.status(200).send({ message: 'Data added successfully', success: true });
   } catch (err) {
     res.status(500).send({ message: 'Failed to insert into the database', success: false });
@@ -45,9 +46,9 @@ const login = async (req, res) => {
     }
     result = await studentModel.studentLogin(rollNumber, aadharNumber);
     if (result.length > 0) {
-      const { id } = result[0];
-      const jwtToken = jwt.sign({ id }, 'scretekeyStudent');
-      res.status(200).send({ message: 'Login successful', jwtToken, success: true });
+      /*const { id } = result[0];
+      const jwtToken = jwt.sign({ id }, 'scretekeyStudent');*/
+      res.status(200).send({ message: 'Login successful', /*jwtToken,*/ success: true });
     }
     res.status(401).send({ message: 'Invalid credentials', success: false });
   } catch (err) {

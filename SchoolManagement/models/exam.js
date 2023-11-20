@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const con = require('../config/connection');
 
 const sheduleinsert = async ({
@@ -38,10 +39,20 @@ const sheduleinsert = async ({
     }
   } catch (error) {
     console.log(error);
-    //  throw error;
   } finally {
     await db.close();
   }
 };
+const questionPaper = async ({
+  name,
+  type,
+  path,
+}) => {
+  const db = con.makeDb();
+  const qr = `INSERT INTO question_paper(name,type,path) VALUES ('${name}','${type}','${path}');`;
+  const result = await db.query(qr);
 
-module.exports = { sheduleinsert };
+  return result;
+};
+
+module.exports = { sheduleinsert, questionPaper };

@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const con = require('../config/connection');
 
 const checkAadhar = async (aadharNumber) => {
@@ -14,7 +15,7 @@ const checkAadhar = async (aadharNumber) => {
 };
 const createUser = async ({
   rollNumber, firstName, lastName, dateOfBirth, gender, aadharNumber,
-  nationality, caste, mobile, address, pinCode, passWord
+  nationality, caste, mobile, address, pinCode, passWord,
 }) => {
   const db = con.makeDb();
   try {
@@ -22,8 +23,7 @@ const createUser = async ({
     const result = await db.query(qr, [rollNumber, firstName, lastName, dateOfBirth,
       gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord]);
     return result;
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
   } finally {
     await db.close();

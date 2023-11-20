@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const con = require('../config/connection');
 
 const view = async (startIndex, endIndex) => {
