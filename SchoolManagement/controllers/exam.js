@@ -6,9 +6,11 @@ const examModel = require('../models/exam');
 const sheduleExam = async (req, res) => {
   try {
     const {
-      name, classId, startDate, endDate, subjectId, roomNumber, academicYear, examTypeId,
+      name, classId, startDate, endDate, subjectId, roomNumber,
+      academicYear, examTypeId, questionPaperId,
     } = req.body;
-    if (!name || !classId || !startDate || !endDate || !subjectId || !roomNumber || !academicYear) {
+    if (!name || !classId || !startDate || !endDate || !subjectId || !roomNumber
+      || !academicYear || !questionPaperId) {
       return res.status(400).send({ message: 'missing required field', success: false });
     }
     const result2 = await examModel.sheduleinsert({
@@ -20,6 +22,7 @@ const sheduleExam = async (req, res) => {
       roomNumber,
       academicYear,
       examTypeId,
+      questionPaperId,
     });
     if (result2.length > 0) {
       return res.status(404).send({ message: 'confilt in either class or room', success: false });
@@ -36,7 +39,6 @@ const stroage = multer.diskStorage({
 const questionPaper = async (req, res) => {
   try {
     const { name, type, path } = req.body;
-
     // eslint-disable-next-line no-unused-vars
     const result2 = await examModel.questionPaper({
       name,

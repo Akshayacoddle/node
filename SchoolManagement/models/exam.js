@@ -1,6 +1,18 @@
 /* eslint-disable consistent-return */
 const con = require('../config/connection');
 
+const questionPaper = async ({
+  name,
+  type,
+  path,
+}) => {
+  const db = con.makeDb();
+  const qr = `INSERT INTO question_paper(name,type,path) VALUES ('${name}','${type}','${path}');`;
+  const result = await db.query(qr);
+
+  return result;
+};
+
 const sheduleinsert = async ({
   name,
   classId,
@@ -10,6 +22,7 @@ const sheduleinsert = async ({
   roomNumber,
   academicYear,
   examTypeId,
+  questionPaperId,
 }) => {
   const db = con.makeDb();
 
@@ -33,7 +46,8 @@ const sheduleinsert = async ({
       }
     }
     if (!hasClassConflict && !hasRoomConflict) {
-      const qr = `INSERT INTO exam (name, class_id, start_date, end_date, subject_id, room_number, academic_year, exam_type_id) VALUES ('${name}', ${classId}, '${startDate}', '${endDate}', ${subjectId}, '${roomNumber}', ${academicYear}, ${examTypeId});`;
+      // question paper upload
+      const qr = `INSERT INTO exam (name, class_id, start_date, end_date, subject_id, room_number, academic_year, exam_type_id,question_paper_id) VALUES ('${name}', ${classId}, '${startDate}', '${endDate}', ${subjectId}, '${roomNumber}', ${academicYear}, ${examTypeId},${questionPaperId});`;
       result = await db.query(qr);
       return result;
     }
@@ -42,17 +56,6 @@ const sheduleinsert = async ({
   } finally {
     await db.close();
   }
-};
-const questionPaper = async ({
-  name,
-  type,
-  path,
-}) => {
-  const db = con.makeDb();
-  const qr = `INSERT INTO question_paper(name,type,path) VALUES ('${name}','${type}','${path}');`;
-  const result = await db.query(qr);
-
-  return result;
 };
 
 module.exports = { sheduleinsert, questionPaper };
