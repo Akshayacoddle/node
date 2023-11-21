@@ -45,11 +45,15 @@ const view = async (startIndex, endIndex) => {
   const db = con.makeDb();
   let result;
   try {
+    //HTMLULment();
     const qr = await `SELECT * FROM student limit ${startIndex} , ${endIndex}`;
     result = db.query(qr);
     return result;
   } catch (err) {
+    //throw err
+    // console.log('ji');
     console.log(err);
+    //console.log('hi');
   } finally {
     await db.close();
   }

@@ -5,11 +5,19 @@ const questionPaper = async ({
   name,
   type,
   path,
+  fileName,
 }) => {
+  let result = [];
   const db = con.makeDb();
-  const qr = `INSERT INTO question_paper(name,type,path) VALUES ('${name}','${type}','${path}');`;
-  const result = await db.query(qr);
-
+  const qr1 = `select file_name from question_paper where file_name= '${fileName}';`;
+  result = await db.query(qr1);
+  console.log(result.length);
+  if (result.length < 1) {
+    console.log('hi');
+    const qr = `INSERT INTO question_paper(name,type,path,file_name) VALUES ('${name}','${type}','${path}','${fileName}');`;
+    const result1 = await db.query(qr);
+    return result1;
+  }
   return result;
 };
 

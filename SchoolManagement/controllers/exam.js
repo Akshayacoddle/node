@@ -38,19 +38,27 @@ const stroage = multer.diskStorage({
 });
 const questionPaper = async (req, res) => {
   try {
-    const { name, type, path } = req.body;
-    // eslint-disable-next-line no-unused-vars
+    const {
+      name, type, path, fileName,
+    } = req.body;
+    if (!req.file.filename || !name || !type || !path || !fileName) {
+      return res.status(400).send({ message: 'missing required field', success: false });
+    }
     const result2 = await examModel.questionPaper({
       name,
       type,
       path,
+      fileName,
     });
+    if (result2.length > 0) {
+      return res.status(404).send({ message: 'Already exist', success: false });
+    }
     res.send({
       success: 1,
-      question_url: `http://localhost:5001/question/${req.file.filename}`,
+      question_url: `http://localhost:5001/question/${fileName}`,
     });
   } catch (err) {
-    console.log(err);
+    res.status(500).send({ message: 'Internal Server Error', success: false });
   }
 };
 
