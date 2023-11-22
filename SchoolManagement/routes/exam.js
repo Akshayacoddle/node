@@ -1,13 +1,10 @@
 const express = require('express');
 
 const multer = require('multer');
-const path = require('path');
-const examModel = require('../models/exam');
+
 const stroage = multer.diskStorage({
   destination: './upload/images',
-  filename: (req, file, cb) => {
-    return cb(null, `${file.originalname}`)
-  }
+  filename: (req, file, cb) => cb(null, `${file.originalname}`),
 });
 
 const upload = multer({

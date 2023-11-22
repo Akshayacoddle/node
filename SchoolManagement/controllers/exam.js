@@ -1,4 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
+const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
 const examModel = require('../models/exam');
@@ -38,24 +39,26 @@ const stroage = multer.diskStorage({
 });
 const questionPaper = async (req, res) => {
   try {
-    const {
-      name, type, path, fileName,
-    } = req.body;
-    if (!req.file.filename || !name || !type || !path || !fileName) {
+    const { exam } = req.body;
+    if (!req.file || !exam) {
       return res.status(400).send({ message: 'missing required field', success: false });
     }
-    const result2 = await examModel.questionPaper({
-      name,
-      type,
-      path,
-      fileName,
-    });
-    if (result2.length > 0) {
+    const result = await examModel.questionPaper({ exam });
+    if (result.length > 0) {
       return res.status(404).send({ message: 'Already exist', success: false });
     }
-    res.send({
-      success: 1,
-      question_url: `http://localhost:5001/question/${fileName}`,
+    const newFileName = result.newName;
+    const finalFileName = `${newFileName}${path.extname(req.file.originalname)}`;
+    const newPath = path.join(req.file.destination, finalFileName);
+    fs.rename(req.file.path, newPath, (err) => {
+      if (err) {
+        return res.status(500).send({ message: 'Error renaming file', success: false });
+      }
+      const result3 = examModel.paperInsert({ exam, newPath, finalFileName });
+      res.send({
+        success: 1,
+        question_url: `http://localhost:5001/question/'${newPath}'`,
+      });
     });
   } catch (err) {
     res.status(500).send({ message: 'Internal Server Error', success: false });

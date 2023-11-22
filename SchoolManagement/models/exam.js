@@ -2,23 +2,40 @@
 const con = require('../config/connection');
 
 const questionPaper = async ({
-  name,
-  type,
-  path,
-  fileName,
+  exam,
 }) => {
-  let result = [];
   const db = con.makeDb();
-  const qr1 = `select file_name from question_paper where file_name= '${fileName}';`;
-  result = await db.query(qr1);
-  console.log(result.length);
-  if (result.length < 1) {
-    console.log('hi');
-    const qr = `INSERT INTO question_paper(name,type,path,file_name) VALUES ('${name}','${type}','${path}','${fileName}');`;
-    const result1 = await db.query(qr);
-    return result1;
+  const query0 = `select exam_type_id from exam where id=${exam};`;
+  const result0 = await db.query(query0);
+  const examVal = result0[0].exam_type_id;
+  const query1 = `SELECT exam_type.type,exam_type.start_date FROM exam_type 
+  right JOIN exam ON exam_type.id = exam.exam_type_id WHERE exam_type.id =${examVal};`;
+  const result1 = await db.query(query1);
+
+  const originalDate = new Date(result1[0].start_date);
+  const newDate = new Date(originalDate);
+  newDate.setDate(originalDate.getDate() + 1);
+  const newDateString = newDate.toISOString().split('T')[0];
+
+  const newName = `${result1[0].type}_${newDateString}`;
+  return { result1, newName };
+};
+
+const paperInsert = async ({
+  exam, newPath, finalFileName,
+}) => {
+  const db = con.makeDb();
+  const qr1 = `select question_paper_id from exam where id=${exam}`;
+  const result1 = await db.query(qr1);
+  if (result1[0].question_paper_id == null) {
+    const qr = `INSERT INTO question_paper(exam,path,file_name) VALUES ('${exam}','${newPath}','${finalFileName}');`;
+    const result = await db.query(qr);
+    const insertedId = result.insertId;
+    const qr2 = `update exam set question_paper_id =${insertedId} where id =${exam};`;
+    const result2 = await db.query(qr2);
   }
-  return result;
+  const qr3 = `UPDATE question_paper SET path='${newPath}', file_name='${finalFileName}' WHERE exam = '${exam}'`;
+  const result3 = await db.query(qr3);
 };
 
 const sheduleinsert = async ({
@@ -33,7 +50,6 @@ const sheduleinsert = async ({
   questionPaperId,
 }) => {
   const db = con.makeDb();
-
   try {
     let result = [];
     let hasClassConflict = false;
@@ -66,4 +82,4 @@ const sheduleinsert = async ({
   }
 };
 
-module.exports = { sheduleinsert, questionPaper };
+module.exports = { sheduleinsert, questionPaper, paperInsert };
