@@ -11,7 +11,6 @@ const questionPaper = async ({
   const query1 = `SELECT exam_type.type,exam_type.start_date FROM exam_type 
   right JOIN exam ON exam_type.id = exam.exam_type_id WHERE exam_type.id =${examVal};`;
   const result1 = await db.query(query1);
-
   const originalDate = new Date(result1[0].start_date);
   const newDate = new Date(originalDate);
   newDate.setDate(originalDate.getDate() + 1);
@@ -71,7 +70,7 @@ const sheduleinsert = async ({
     }
     if (!hasClassConflict && !hasRoomConflict) {
       // question paper upload
-      const qr = `INSERT INTO exam (name, class_id, start_date, end_date, subject_id, room_number, academic_year, exam_type_id,question_paper_id) VALUES ('${name}', ${classId}, '${startDate}', '${endDate}', ${subjectId}, '${roomNumber}', ${academicYear}, ${examTypeId},${questionPaperId});`;
+      const qr = `INSERT INTO exam (name, class_id, start_date, end_date, subject_id, room_number, academic_year, exam_type_id) VALUES ('${name}', ${classId}, '${startDate}', '${endDate}', ${subjectId}, '${roomNumber}', ${academicYear}, ${examTypeId});`;
       result = await db.query(qr);
       return result;
     }
