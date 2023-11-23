@@ -33,13 +33,10 @@ const sheduleExam = async (req, res) => {
     res.status(500).send({ message: 'Failed to insert into the database', success: false });
   }
 };
-const stroage = multer.diskStorage({
-  destination: './upload/images',
-  filename: (req, file, cb) => cb(null, `${file.originalname}${path.extname(file.originalname)}`),
-});
 
 const questionPaper = async (req, res) => {
   try {
+    console.log(req.file)
     const { exam } = req.body;
     if (!req.file || !exam) {
       return res.status(400).send({ message: 'missing required field', success: false });
@@ -55,7 +52,8 @@ const questionPaper = async (req, res) => {
       if (err) {
         return res.status(500).send({ message: 'Error renaming file', success: false });
       }
-      newPath = newPath.replace(/\\/g, '\\\\');
+      newPath = newPath.replace(/\\/g, '/');
+
       const result3 = examModel.paperInsert({ exam, newPath, finalFileName });
       res.send({
         success: 1,
@@ -67,4 +65,4 @@ const questionPaper = async (req, res) => {
   }
 };
 
-module.exports = { sheduleExam, questionPaper, stroage };
+module.exports = { sheduleExam, questionPaper };
