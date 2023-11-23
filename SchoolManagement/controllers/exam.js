@@ -36,7 +36,6 @@ const sheduleExam = async (req, res) => {
 
 const questionPaper = async (req, res) => {
   try {
-    console.log(req.file)
     const { exam } = req.body;
     if (!req.file || !exam) {
       return res.status(400).send({ message: 'missing required field', success: false });
@@ -55,9 +54,10 @@ const questionPaper = async (req, res) => {
       newPath = newPath.replace(/\\/g, '/');
 
       const result3 = examModel.paperInsert({ exam, newPath, finalFileName });
-      res.send({
-        success: 1,
-        question_url: `http://localhost:5001/question/${newPath}`,
+      res.json({
+        success: true,
+        message: 'successfully added',
+        question_url: `http://localhost:8080/question/${finalFileName}`,
       });
     });
   } catch (err) {

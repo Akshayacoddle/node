@@ -1,10 +1,10 @@
 const express = require('express');
 const multer = require('multer');
+const path = require('path');
 
 const stroage = multer.diskStorage({
   destination: './upload/images',
   filename: (req, file, cb) => {
-    // console.log(file);
     cb(null, `${file.originalname}`);
   },
 });
@@ -23,6 +23,5 @@ const examRoute = require('../controllers/exam');
 
 router.post('/shedule', jwt.verifyJwt, examRoute.sheduleExam);
 router.post('/questions', jwt.verifyJwt, upload.single('question'), examRoute.questionPaper);
-// router.use('/question', express.static('upload/images'));
 
 module.exports = router;
