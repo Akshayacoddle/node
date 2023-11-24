@@ -37,6 +37,9 @@ const sheduleExam = async (req, res) => {
 const questionPaper = async (req, res) => {
   try {
     const { exam } = req.body;
+    if (!req.file) {
+      return res.status(400).send({ message: 'only image files with 2mb or pdf file with 5mb are are allowed', success: false });
+    }
     if (!req.file || !exam) {
       return res.status(400).send({ message: 'missing required field', success: false });
     }
