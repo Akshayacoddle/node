@@ -40,9 +40,9 @@ const questionPaper = async (req, res) => {
     if (!req.file) {
       return res.status(400).send({ message: 'only image files with 2mb or pdf file with 5mb are are allowed', success: false });
     }
-    if (!req.file || !exam) {
-      return res.status(400).send({ message: 'missing required field', success: false });
-    }
+    /* if (req.file === undefined || !exam) {
+       return res.status(400).send({ message: 'missing required field', success: false });
+     } */
     const result = await examModel.questionPaper({ exam });
     if (result.length > 0) {
       return res.status(404).send({ message: 'Already exist', success: false });
@@ -57,7 +57,7 @@ const questionPaper = async (req, res) => {
       newPath = newPath.replace(/\\/g, '/');
 
       const result3 = examModel.paperInsert({ exam, newPath, finalFileName });
-      res.json({
+      res.status(200).send({
         success: true,
         message: 'successfully added',
         question_url: `http://localhost:8080/question/${finalFileName}`,
