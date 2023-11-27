@@ -15,6 +15,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/question', express.static('upload/images'));
 
-app.listen(8080, () => {
-  console.log('server listening at port 8080');
+app.listen(5001, () => {
+  console.log('server listening at port 5001');
 });

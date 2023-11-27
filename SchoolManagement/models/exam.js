@@ -81,4 +81,33 @@ const sheduleinsert = async ({
   }
 };
 
-module.exports = { sheduleinsert, questionPaper, paperInsert };
+const generateHallTicket = async ({ classes, examType }) => {
+  const db = con.makeDb();
+  try {
+    const qr = `select class.academic_year,student.id,first_name,class.grade, student.class_id,class.grade from class inner join exam on  class.id = exam.class_id
+    inner join student on  class.id = student.class_id
+    WHERE class.id = '${classes}' group by student.id ORDER BY student.first_name;`;
+    const result1 = await db.query(qr);
+    const qr3 = `select EXTRACT(YEAR FROM start_date) as year,type from akshaya.exam_type where id=${examType}`;
+    const result3 = await db.query(qr3);
+    const academicYear = result1[0].academic_year + 1;
+    const examYear = result3[0].year;
+    const qr4 = `SELECT * FROM akshaya.hall_ticket WHERE class = '${result1[0].grade}' AND exam_seat LIKE '${result3[0].year}%';`;
+    const result4 = await db.query(qr4);
+    let i = 0;
+    if (result4.length < 1 && examYear === academicYear) {
+      result1.forEach((element) => {
+        i += 1;
+        const qr2 = `INSERT INTO akshaya.hall_ticket (exam_type_id, exam_seat, class, full_name,student_id) VALUES ('${examType}', '${result3[0].year + element.grade + i}', '${element.grade}', '${element.first_name}',${element.id});`;
+        const result2 = db.query(qr2);
+      });
+    }
+    return result1;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+  }
+};
+
+module.exports = { sheduleinsert, questionPaper, paperInsert, generateHallTicket };
