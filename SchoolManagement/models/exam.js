@@ -92,17 +92,18 @@ const generateHallTicket = async ({ classes, examType }) => {
     const result3 = await db.query(qr3);
     const academicYear = result1[0].academic_year + 1;
     const examYear = result3[0].year;
+    const examfinal = result3[0].type;
     const qr4 = `SELECT * FROM akshaya.hall_ticket WHERE class = '${result1[0].grade}' AND exam_seat LIKE '${result3[0].year}%';`;
     const result4 = await db.query(qr4);
     let i = 0;
-    if (result4.length < 1 && examYear === academicYear) {
+    if (result4.length < 1 && examYear === academicYear && examfinal === 'FinalExam') {
       result1.forEach((element) => {
         i += 1;
         const qr2 = `INSERT INTO akshaya.hall_ticket (exam_type_id, exam_seat, class, full_name,student_id) VALUES ('${examType}', '${result3[0].year + element.grade + i}', '${element.grade}', '${element.first_name}',${element.id});`;
         const result2 = db.query(qr2);
       });
     }
-    return result1;
+    return { result4, result3 };
   } catch (error) {
     console.log(error);
   } finally {
