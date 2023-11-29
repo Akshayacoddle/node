@@ -4,9 +4,9 @@ const con = require('../config/connection');
 const checkAadhar = async (aadharNumber) => {
   const db = con.makeDb();
   try {
-    const qr = `select * from student where aadhar_number =${aadharNumber}`;
-    const result = await db.query(qr);
-    return result;
+    const checkAadharQuery = `select * from student where aadhar_number =${aadharNumber}`;
+    const checkAadharResult = await db.query(checkAadharQuery);
+    return checkAadharResult;
   } catch (err) {
     console.log(err);
   } finally {
@@ -19,10 +19,10 @@ const createUser = async ({
 }) => {
   const db = con.makeDb();
   try {
-    const qr = 'INSERT  INTO student (roll_number, first_name, last_name, date_of_birth, gender, aadhar_number, nationality, caste, mobile, address, pin_code,password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    const result = await db.query(qr, [rollNumber, firstName, lastName, dateOfBirth,
-      gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord]);
-    return result;
+    const createStudentquery = 'INSERT  INTO student (roll_number, first_name, last_name, date_of_birth, gender, aadhar_number, nationality, caste, mobile, address, pin_code,password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const createStudentResult = await db.query(createStudentquery, [rollNumber, firstName, lastName,
+      dateOfBirth, gender, aadharNumber, nationality, caste, mobile, address, pinCode, passWord]);
+    return createStudentResult;
   } catch (err) {
     console.log(err);
   } finally {
@@ -32,9 +32,9 @@ const createUser = async ({
 const studentLogin = async (rollNumber, aadharNumber) => {
   const db = con.makeDb();
   try {
-    const qr = 'SELECT * FROM student WHERE roll_number = ? AND aadhar_number = ?';
-    const result = await db.query(qr, [rollNumber, aadharNumber]);
-    return result;
+    const studentLoginQuery = 'SELECT * FROM student WHERE roll_number = ? AND aadhar_number = ?';
+    const studentLoginResult = await db.query(studentLoginQuery, [rollNumber, aadharNumber]);
+    return studentLoginResult;
   } catch (err) {
     console.log(err);
   } finally {
@@ -43,17 +43,12 @@ const studentLogin = async (rollNumber, aadharNumber) => {
 };
 const view = async (startIndex, endIndex) => {
   const db = con.makeDb();
-  let result;
   try {
-    //HTMLULment();
-    const qr = await `SELECT * FROM student limit ${startIndex} , ${endIndex}`;
-    result = db.query(qr);
-    return result;
+    const viewQuery = await `SELECT * FROM student limit ${startIndex} , ${endIndex}`;
+    const viewResult = db.query(viewQuery);
+    return viewResult;
   } catch (err) {
-    //throw err
-    // console.log('ji');
     console.log(err);
-    //console.log('hi');
   } finally {
     await db.close();
   }

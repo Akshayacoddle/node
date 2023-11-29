@@ -80,31 +80,34 @@ const hallTicket = async (req, res) => {
       return res.status(400).send({ message: 'missing required field', success: false });
     }
     const result = await examModel.generateHallTicket({ examType, classes });
+    console.log(result);
     // console.log(result);
     // console.log(result.result3[0].type);
-    if (result.result4.length > 0) {
+    if (result.checkingExamYearResult.length > 0) {
       return res.status(403).send({ message: 'hall ticket already generated ', success: false });
     }
-    if (result.result3[0].type !== 'FinalExam') {
+    if (result.examYearResult[0].type !== 'FinalExam') {
       return res.status(422).send({ message: 'hall ticket can generate only for final', success: false });
     }
     return res.status(200).send({ message: 'Hall ticket generated', success: true });
   } catch (err) {
+    console.log(err);
     res.status(500).send({ message: 'Internal Server Error', success: false });
   }
 };
 
-const hallTicketView = async (req, res) => {
+/*const hallTicketView = async (req, res) => {
   try {
     const { admissionNo } = req.query;
     if (!admissionNo) {
       return res.status(400).send({ message: 'missing required field', success: false });
     }
     const result = await examModel.hallTicketViews({ admissionNo });
+    if (result.length)
   } catch (err) {
-
+    console.log(err);
   }
-}
+}*/
 module.exports = {
-  sheduleExam, questionPaper, hallTicket, hallTicketView,
+  sheduleExam, questionPaper, hallTicket//, hallTicketView,
 };
