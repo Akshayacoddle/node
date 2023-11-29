@@ -46,7 +46,6 @@ const sheduleinsert = async ({
   roomNumber,
   academicYear,
   examTypeId,
-  questionPaperId,
 }) => {
   const db = con.makeDb();
   try {
@@ -84,28 +83,36 @@ const sheduleinsert = async ({
 const generateHallTicket = async ({ classes, examType }) => {
   const db = con.makeDb();
   try {
+    let k = 0;
     const qr = `select class.academic_year,student.id,first_name,class.grade, student.class_id,class.grade from class inner join exam on  class.id = exam.class_id
     inner join student on  class.id = student.class_id
-    WHERE class.id = '${classes}' group by student.id ORDER BY student.first_name;`;
+    WHERE class.id = '${classes}' group by student.id ORDER BY student.first_name,last_name;`;
     const result1 = await db.query(qr);
-    const qr3 = `select EXTRACT(YEAR FROM start_date) as year,type from akshaya.exam_type where id=${examType}`;
+    const qr3 = `select EXTRACT(YEAR FROM start_date) as year,type,start_date,end_date from akshaya.exam_type where id=${examType}`;
     const result3 = await db.query(qr3);
-    //console.log(result1);
     const academicYear = result1[0].academic_year + 1;
     const examYear = result3[0].year;
     const examfinal = result3[0].type;
-    const qr4 = `SELECT * FROM akshaya.hall_ticket WHERE class = '${result1[0].grade}' AND exam_seat LIKE '${result3[0].year}%';`;
+    const qr4 = `SELECT * FROM akshaya.hall_ticket WHERE class_id = '${classes}' AND exam_seat LIKE '${result3[0].year}%';`;
     const result4 = await db.query(qr4);
-    //console.log(result1);
-    //console.log(result4);
+    const qr5 = 'select * from room;';
+    const result5 = await db.query(qr5);
+    let j = 0;
     let i = 0;
     if (result4.length <= 1 && examYear === academicYear && examfinal === 'FinalExam') {
-      console.log('yes');
       result1.forEach((element) => {
+        const capacityForEachClass = Math.round(result5[k].capacity / 3);
+        const roomid = result5[k].id;
+        const qr7 = `select room_id from akshaya.exam_room_availability  where room_id=${roomid};`;
+        const result7 = db.query(qr7);
         i += 1;
-        const qr2 = `INSERT INTO akshaya.hall_ticket (exam_type_id, exam_seat, class, full_name,student_id) VALUES ('${examType}', '${result3[0].year + element.grade + i}', '${element.grade}', '${element.first_name}',${element.id});`;
+        j += 1;
+        const qr2 = `INSERT INTO akshaya.hall_ticket (exam_type_id, exam_seat, class_id, student_id,room_id) VALUES ('${examType}', '${result3[0].year + element.grade + i}', '${classes}',${element.id},${result5[k].id});`;
         const result2 = db.query(qr2);
-        //console.log(result2);
+        if (j === capacityForEachClass) {
+          j = 0;
+          k += 1;
+        }
       });
     }
     return { result4, result3 };
@@ -115,5 +122,12 @@ const generateHallTicket = async ({ classes, examType }) => {
     await db.close();
   }
 };
+/*const hallTicketViews = async ({ admissionNo }) => {
+  const db = con.makeDb();
+  try {
 
-module.exports = { sheduleinsert, questionPaper, paperInsert, generateHallTicket };
+  }
+}*/
+module.exports = {
+  sheduleinsert, questionPaper, paperInsert, generateHallTicket, // hallTicketViews,
+};

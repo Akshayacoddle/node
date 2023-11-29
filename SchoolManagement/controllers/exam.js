@@ -37,13 +37,9 @@ const sheduleExam = async (req, res) => {
 const questionPaper = async (req, res) => {
   try {
     const { exam } = req.body;
-    console.log(exam);
     if (!req.file) {
       return res.status(400).send({ message: 'only image files with 2mb or pdf file with 5mb are are allowed', success: false });
     }
-    /* if (req.file === undefined || !exam) {
-       return res.status(400).send({ message: 'missing required field', success: false });
-     } */
     const result = await examModel.questionPaper({ exam });
     if (result.length > 0) {
       return res.status(404).send({ message: 'Already exist', success: false });
@@ -79,13 +75,13 @@ const updatePaper = async (req, res) => {
 const hallTicket = async (req, res) => {
   try {
     const { classes, examType } = req.query;
-    //console.log(classes);
+    // console.log(classes);
     if (!classes || !examType) {
       return res.status(400).send({ message: 'missing required field', success: false });
     }
     const result = await examModel.generateHallTicket({ examType, classes });
-    //console.log(result);
-    //console.log(result.result3[0].type);
+    // console.log(result);
+    // console.log(result.result3[0].type);
     if (result.result4.length > 0) {
       return res.status(403).send({ message: 'hall ticket already generated ', success: false });
     }
@@ -94,7 +90,21 @@ const hallTicket = async (req, res) => {
     }
     return res.status(200).send({ message: 'Hall ticket generated', success: true });
   } catch (err) {
-    res.send(err);
+    res.status(500).send({ message: 'Internal Server Error', success: false });
   }
 };
-module.exports = { sheduleExam, questionPaper, hallTicket };
+
+const hallTicketView = async (req, res) => {
+  try {
+    const { admissionNo } = req.query;
+    if (!admissionNo) {
+      return res.status(400).send({ message: 'missing required field', success: false });
+    }
+    const result = await examModel.hallTicketViews({ admissionNo });
+  } catch (err) {
+
+  }
+}
+module.exports = {
+  sheduleExam, questionPaper, hallTicket, hallTicketView,
+};
