@@ -123,12 +123,33 @@ const generateHallTicket = async ({ classes, examType }) => {
     await db.close();
   }
 };
-/*const hallTicketViews = async ({ admissionNo }) => {
+const hallTicketViews = async ({ admissionNo }) => {
   const db = con.makeDb();
   try {
-
+    const studentHallticketQuery = `select student.class_id,
+    concat_ws(' ',first_name,last_name) as full_name,student.date_of_birth,student.address,class.grade,exam_type.type,exam_type.start_date,hall_ticket.exam_seat,room.name as class_room
+    from student inner join admission on student.id=admission.student_id
+   inner join hall_ticket on student.id=hall_ticket.student_id
+   inner join class on class.id=student.class_id
+   inner join exam_type on exam_type.id=hall_ticket.exam_type_id
+   inner join room on room.id=hall_ticket.room_id
+    where admission.id=${admissionNo}`;
+    const studentHallticketResult = await db.query(studentHallticketQuery);
+    const classes = studentHallticketResult[0].class_id;
+    const examSubjectQuery = `select subject.name as subject,exam_type_id,exam.class_id,exam.start_date,exam.end_date from class inner join student on class.id=student.class_id
+    inner join exam on class.id=exam.class_id
+    inner join exam_type on exam_type.id=exam.exam_type_id
+    inner join subject on subject.id =exam.subject_id where exam.class_id= ${classes} and exam_type_id =3 group by 
+     subject.name ,exam_type_id,exam.class_id,exam.start_date,exam.end_date;`;
+    const examSubjectResult = await db.query(examSubjectQuery)
+    console.log(studentHallticketResult[0].class_id);
+    return { studentHallticketResult, examSubjectResult };
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await db.close();
   }
-}*/
+};
 module.exports = {
-  sheduleinsert, questionPaper, paperInsert, generateHallTicket, // hallTicketViews,
+  sheduleinsert, questionPaper, paperInsert, generateHallTicket, hallTicketViews,
 };

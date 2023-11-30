@@ -96,18 +96,18 @@ const hallTicket = async (req, res) => {
   }
 };
 
-/*const hallTicketView = async (req, res) => {
+const hallTicketView = async (req, res) => {
   try {
     const { admissionNo } = req.query;
     if (!admissionNo) {
       return res.status(400).send({ message: 'missing required field', success: false });
     }
     const result = await examModel.hallTicketViews({ admissionNo });
-    if (result.length)
+    return res.status(200).send({ message: result, success: true });
   } catch (err) {
     console.log(err);
   }
-}*/
+};
 module.exports = {
-  sheduleExam, questionPaper, hallTicket//, hallTicketView,
+  sheduleExam, questionPaper, hallTicket, hallTicketView,
 };
