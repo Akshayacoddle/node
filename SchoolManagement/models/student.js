@@ -53,7 +53,29 @@ const view = async (startIndex, endIndex) => {
     await db.close();
   }
 };
-
+const review = async ({
+  rollNumber,
+  classId,
+  teacher,
+  subject,
+  aboutTeacher,
+  aboutSchool,
+  thingsToImprove,
+}) => {
+  const db = con.makeDb();
+  try {
+    const studentIdQuery = `select id from student where roll_number =${rollNumber} and class_id=${classId}`;
+    const studentIdResult = await db.query(studentIdQuery);
+    console.log(studentIdResult[0].id);
+    const reviewQuery = `INSERT INTO akshaya.review (student_id, teacher_id, subject_id, about_teacher, about_school, improvement_areasl, class_id) VALUES (${studentIdResult[0].id}, ${teacher}, ${subject}, '${aboutTeacher}', '${aboutSchool}', '${thingsToImprove}', ${classId});`;
+    const reviewResult = await db.query(reviewQuery);
+    console.log(reviewResult);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await db.close();
+  }
+};
 module.exports = {
-  createUser, studentLogin, view, checkAadhar,
+  createUser, studentLogin, view, checkAadhar, review,
 };

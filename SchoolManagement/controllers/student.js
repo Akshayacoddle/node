@@ -68,4 +68,31 @@ const viewStudent = async (req, res) => {
   }
 };
 
-module.exports = { createData, login, viewStudent };
+const studentReview = async (req, res) => {
+  try {
+    const {
+      rollNumber, classId, teacher, subject,
+      aboutTeacher, aboutSchool, thingsToImprove,
+    } = req.query;
+    if (!rollNumber || !classId || !teacher || !subject
+      || !aboutTeacher || !aboutSchool || !thingsToImprove) {
+      return res.status(400).send({ message: 'Missing required fields', success: false });
+    }
+    const result = await studentModel.review({
+      rollNumber,
+      classId,
+      teacher,
+      subject,
+      aboutTeacher,
+      aboutSchool,
+      thingsToImprove,
+    });
+    res.status(200).send({ message: 'success', result, success: true });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: 'Failed to fetch database', success: false });
+  }
+};
+module.exports = {
+  createData, login, viewStudent, studentReview,
+};
