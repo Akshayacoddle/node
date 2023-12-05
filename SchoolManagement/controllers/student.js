@@ -46,9 +46,9 @@ const login = async (req, res) => {
     }
     result = await studentModel.studentLogin(rollNumber, aadharNumber);
     if (result.length > 0) {
-      /*const { id } = result[0];
-      const jwtToken = jwt.sign({ id }, 'scretekeyStudent');*/
-      res.status(200).send({ message: 'Login successful', /*jwtToken,*/ success: true });
+      const { id } = result[0];
+      const jwtToken = jwt.sign({ id }, 'scretekeyStudent');
+      res.status(200).send({ message: 'Login successful', jwtToken, success: true });
     }
     res.status(401).send({ message: 'Invalid credentials', success: false });
   } catch (err) {

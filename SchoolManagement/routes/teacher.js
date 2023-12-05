@@ -9,5 +9,5 @@ const jsonParser = bodyParser.json();
 router.use(jsonParser);
 
 router.post('/login', teacherController.login);
-router.get('/view', jwt.verifyJwt, teacherController.viewTeachers);
+router.get('/view', jwt.verifyJwt, jwt.restricted('admin'), teacherController.viewTeachers);
 module.exports = router;

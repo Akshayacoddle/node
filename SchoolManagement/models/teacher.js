@@ -27,4 +27,16 @@ const login = async (email, password) => {
   }
 };
 
-module.exports = { view, login };
+const authentication = async (id, role) => {
+  const db = con.makeDb();
+  try {
+    const verifyQuery = `select id,name from teacher where role ='${role}' and id =${id};`;
+    const verifyResult = await db.query(verifyQuery);
+    return verifyResult;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await db.close();
+  }
+};
+module.exports = { view, login, authentication };

@@ -115,7 +115,6 @@ const generateHallTicket = async ({ classes, examType }) => {
         db.query(hallTicketInsertQuery);
       });
     }
-    //console.log(checkingExamYearResult, examYearResult);
     return { checkingExamYearResult, examYearResult };
   } catch (error) {
     console.log(error);
@@ -141,8 +140,7 @@ const hallTicketViews = async ({ admissionNo }) => {
     inner join exam_type on exam_type.id=exam.exam_type_id
     inner join subject on subject.id =exam.subject_id where exam.class_id= ${classes} and exam_type_id =3 group by 
      subject.name ,exam_type_id,exam.class_id,exam.start_date,exam.end_date;`;
-    const examSubjectResult = await db.query(examSubjectQuery)
-    console.log(studentHallticketResult[0].class_id);
+    const examSubjectResult = await db.query(examSubjectQuery);
     return { studentHallticketResult, examSubjectResult };
   } catch (err) {
     console.log(err);

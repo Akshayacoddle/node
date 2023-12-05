@@ -66,10 +66,21 @@ const review = async ({
   try {
     const studentIdQuery = `select id from student where roll_number =${rollNumber} and class_id=${classId}`;
     const studentIdResult = await db.query(studentIdQuery);
-    console.log(studentIdResult[0].id);
     const reviewQuery = `INSERT INTO akshaya.review (student_id, teacher_id, subject_id, about_teacher, about_school, improvement_areasl, class_id) VALUES (${studentIdResult[0].id}, ${teacher}, ${subject}, '${aboutTeacher}', '${aboutSchool}', '${thingsToImprove}', ${classId});`;
     const reviewResult = await db.query(reviewQuery);
-    console.log(reviewResult);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await db.close();
+  }
+};
+
+const authentication = async (id, role) => {
+  const db = con.makeDb();
+  try {
+    const verifyQuery = `select id from student where role ='${role}' and id =${id};`;
+    const verifyResult = await db.query(verifyQuery);
+    return verifyResult;
   } catch (err) {
     console.log(err);
   } finally {
@@ -77,5 +88,5 @@ const review = async ({
   }
 };
 module.exports = {
-  createUser, studentLogin, view, checkAadhar, review,
+  createUser, studentLogin, view, checkAadhar, review, authentication,
 };
