@@ -75,14 +75,10 @@ const updatePaper = async (req, res) => {
 const hallTicket = async (req, res) => {
   try {
     const { classes, examType } = req.query;
-    // console.log(classes);
     if (!classes || !examType) {
       return res.status(400).send({ message: 'missing required field', success: false });
     }
     const result = await examModel.generateHallTicket({ examType, classes });
-    console.log(result);
-    // console.log(result);
-    // console.log(result.result3[0].type);
     if (result.checkingExamYearResult.length > 0) {
       return res.status(403).send({ message: 'hall ticket already generated ', success: false });
     }
@@ -91,7 +87,6 @@ const hallTicket = async (req, res) => {
     }
     return res.status(200).send({ message: 'Hall ticket generated', success: true });
   } catch (err) {
-    console.log(err);
     res.status(500).send({ message: 'Internal Server Error', success: false });
   }
 };
@@ -103,6 +98,11 @@ const hallTicketView = async (req, res) => {
       return res.status(400).send({ message: 'missing required field', success: false });
     }
     const result = await examModel.hallTicketViews({ admissionNo });
+    const originalDate = new Date(result.studentHallticketResult[0].date_of_birth);
+    const newDate = new Date(originalDate);
+    newDate.setDate(originalDate.getDate() + 1);
+    const newDateString = newDate.toISOString();
+    console.log(newDateString);
     return res.status(200).send({ message: result, success: true });
   } catch (err) {
     console.log(err);
