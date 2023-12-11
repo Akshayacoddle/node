@@ -1,0 +1,41 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    line-height: 1.6;
+    background-color: rgb(242, 243, 243);
+    margin: 10px 10px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+form * {
+    align-self: center;
+    display: block;
+}
+
+select {
+    padding: 4px 155px;
+}
+
+input {
+    padding: 5px 100px;
+}
+
+#button {
+    padding: 10px 100px;
+    margin: 20px 0px;
+    color: aliceblue;
+    background-color: #5d996e;
+}
