@@ -79,7 +79,20 @@ form.addEventListener('submit', async (e) => {
                 Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzA1LCJpYXQiOjE3MDIwMjY2MTN9.GQc3iz6p6hAgR3ywbDYlRCnWNdDi3cRI71IQeSoOJOw',
             },
             body: JSON.stringify(examData),
+
         });
+        console.log(response);
+        const status = response.status
+        if (status == 422) {
+            document.getElementById('p').innerHTML = 'missing required field'
+        } else if (status == 409) {
+            document.getElementById('p').innerHTML = 'confilt in either class or room'
+        } else if (status == 200) {
+            document.getElementById('p').style.color = 'green'
+            document.getElementById('p').innerHTML = 'data added successfully'
+        } else if (status == 500) {
+            document.getElementById('p').innerHTML = 'Failed to insert into the database'
+        }
 
     } catch (error) {
         console.error('Error calling second API:', error);
